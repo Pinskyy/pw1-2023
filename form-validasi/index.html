@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.css" rel="stylesheet" />
+    <style>
+        .container {
+            position: absolute;
+            width: 500px;
+            padding: 15px;
+            border: 2px solid black;
+            border-radius: 20px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: grid;
+            grid-template-columns: 30% 70%;
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        form label {
+            text-align: left;
+            padding-right: 10px;
+        }
+
+        form input {
+            width: 100%;
+            padding: 5px;
+        }
+
+        button {
+            padding: 0 20px 0 20px;
+            margin-top: 10px;
+            margin-left: 150px;
+            margin-right: auto;
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: auto auto;
+            justify-content: center;
+            align-content: center;
+            margin-top: 20px;
+            column-gap: 20px;
+        }
+
+        .error-message {
+            color: red;
+        }
+
+        .error {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login Form</h2>
+        <form>
+            <label class="name" for="name">Name:</label>
+            <input id="name" type="text" placeholder="Enter Your Name" required />
+
+            <label for="email">Email:</label>
+            <input id="email" type="email" placeholder="abcde@gmail.com" required />
+
+            <label for="time">Departure Time:</label>
+            <input id="time" type="text" placeholder="--:--" required />
+
+            <label for="ticket">Number of Tickets:</label>
+            <input id="ticket" type="number" placeholder="Number of Tickets" min="1" max="10" required />
+
+            <button type="button" onclick="validasiForm()">Submit</button>
+        </form>
+        <div class="results" id="results"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/timepicker.js/latest/timepicker.min.js"></script>
+    <script>
+        function error(message) {
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = `<p class="error-message">${message}</p>`;
+
+            document.getElementById("name").classList.remove("error");
+            document.getElementById("email").classList.remove("error");
+            document.getElementById("time").classList.remove("error");
+            document.getElementById("ticket").classList.remove("error");
+        }
+
+        function Results(name, email, time, ticket) {
+            const results = document.getElementById("results");
+            results.innerHTML = `<label>Name:</label>
+                            <span>${name}</span>
+                            <label>Email:</label>
+                            <span>${email}</span>
+                            <label>Departure Time:</label>
+                            <span>${time}</span>
+                            <label>Number of tickets:</label>
+                            <span>${ticket}</span>`;
+        }
+
+        function validasiForm() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let time = document.getElementById("time").value;
+            let ticket = document.getElementById("ticket").value;
+
+            let isValid = true;
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+            error("");
+
+            if (name.trim() === "") {
+                error("Name is required.");
+                isValid = false;
+            } else if (name.length > 30) {
+                error("Name should be at most 30 characters.");
+                isValid = false;
+            } else if (email.trim() === "") {
+                error("Email is required.");
+                isValid = false;
+            } else if (!emailRegex.test(email)) {
+                error("Invalid email format.");
+                isValid = false;
+            } else if (time.trim() === "") {
+                error("Departure Time is required.");
+                isValid = false;
+            } else if (ticket.trim() === "") {
+                error("Number of tickets is required.");
+                isValid = false;
+            } else if (ticket < 1 || ticket > 10) {
+                error("Number of tickets should be between 1 and 10.");
+                isValid = false;
+            }
+
+            if (isValid) {
+                Results(name, email, time, ticket);
+            } else {
+                // Reset input borders on error
+                document.getElementById("name").classList.add("error");
+                document.getElementById("email").classList.add("error");
+                document.getElementById("time").classList.add("error");
+                document.getElementById("ticket").classList.add("error");
+            }
+        }
+
+        var timepicker = new TimePicker('time', {
+            lang: 'en',
+            theme: 'dark'
+        });
+
+        var input = document.getElementById('time');
+
+        timepicker.on('change', function (evt) {
+            var value = (evt.hour || '00') + ':' + (evt.minute || '00');
+            evt.element.value = value;
+        });
+    </script>
+</body>
+
+</html>
